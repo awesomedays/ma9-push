@@ -22,7 +22,6 @@ public sealed class TelegramNotifier
     // 예)
     // private const string BOT_TOKEN = "123456789:AAxxxxxxxxxxxxxxxxxxxxx";
     // private const string CHAT_ID   = "-1001234567890";
-
     // ===============================
 
     public async Task SendAsync(string message)
