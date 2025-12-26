@@ -1,0 +1,104 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\detection\\endsigndetector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:detection\\endsigndetector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\capture\\captureservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:capture\\captureservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\notification\\telegramnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:notification\\telegramnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\core\\statemachine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:core\\statemachine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAJsBAAAAAAAAAAAmwMIBAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T08:08:31.62Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EndSignDetector.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Detection\\EndSignDetector.cs",
+              "RelativeDocumentMoniker": "Detection\\EndSignDetector.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Detection\\EndSignDetector.cs",
+              "RelativeToolTip": "Detection\\EndSignDetector.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAiwFkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-26T05:36:10.569Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CaptureService.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Capture\\CaptureService.cs",
+              "RelativeDocumentMoniker": "Capture\\CaptureService.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Capture\\CaptureService.cs",
+              "RelativeToolTip": "Capture\\CaptureService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-26T03:23:21.798Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TelegramNotifier.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Notification\\TelegramNotifier.cs",
+              "RelativeDocumentMoniker": "Notification\\TelegramNotifier.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Notification\\TelegramNotifier.cs",
+              "RelativeToolTip": "Notification\\TelegramNotifier.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T09:02:31.808Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "StateMachine.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Core\\StateMachine.cs",
+              "RelativeDocumentMoniker": "Core\\StateMachine.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Core\\StateMachine.cs",
+              "RelativeToolTip": "Core\\StateMachine.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T08:49:55.581Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
