@@ -68,7 +68,6 @@ public sealed class TelegramNotifier
             await Task.Delay(250 * attempt).ConfigureAwait(false);
         }
 
-        // 최종 실패 시 콘솔에도 남김 (로컬 로그 대비)
-        Console.WriteLine($"[Telegram] Final send failed. message={message}");
+        Logger.Error($"[Telegram] Final send failed. message={message}");
     }
 }

@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+
 using OpenCvSharp;
-using OpenCvSharp.Extensions;
+
+using Ma9_Season_Push.Logging;
 
 namespace Ma9_Season_Push.Capture
 {
     /// <summary>
-    /// 지정된 모니터 화면 캡처 → OpenCvSharp Mat 변환
-    /// - 중요: BitmapConverter.ToMat(bitmap)은 bitmap 메모리를 참조하는 Mat(헤더)일 수 있음
-    ///         따라서 반환 전에 반드시 Clone()하여 Mat이 자기 메모리를 소유하게 해야 함
+    /// 지정된 모니터 화면 캡처 → OpenCvSharp Mat(CV_8UC4) 반환
+    /// - unsafe 미사용
+    /// - Stride 음수(bottom-up DIB)까지 완전 대응
+    /// - OpenCvSharp.Extensions 의존 제거
     /// </summary>
     public sealed class CaptureService
     {
         private readonly Screen _targetScreen;
+
+        // CaptureFrame 내부 예외 스팸 방지
+        private DateTime _lastCaptureErrorAt = DateTime.MinValue;
+        private const int CaptureErrorLogIntervalMs = 2000;
 
         public CaptureService(int screenIndex = 1)
         {
@@ -28,16 +36,16 @@ namespace Ma9_Season_Push.Capture
         public Mat CaptureFrame()
         {
             var bounds = _targetScreen.Bounds;
-
-            // bounds가 비정상일 때 방어
             if (bounds.Width <= 0 || bounds.Height <= 0)
                 return new Mat();
 
             try
             {
-                // Bitmap을 만들고, CopyFromScreen으로 픽셀 채운 뒤
-                // ToMat -> Clone -> Bitmap Dispose 순서를 보장해야 함
-                using var bitmap = new Bitmap(bounds.Width, bounds.Height, PixelFormat.Format32bppArgb);
+                using var bitmap = new Bitmap(
+                    bounds.Width,
+                    bounds.Height,
+                    PixelFormat.Format32bppArgb
+                );
 
                 using (var g = Graphics.FromImage(bitmap))
                 {
@@ -51,14 +59,63 @@ namespace Ma9_Season_Push.Capture
                     );
                 }
 
-                // ToMat이 bitmap 메모리를 참조할 수 있으므로, 반드시 Clone()해서 반환
-                using var tmp = BitmapConverter.ToMat(bitmap);   // tmp는 bitmap 메모리 참조 가능
-                return tmp.Clone();                               // 반환 Mat은 독립 메모리 소유
+                var mat = new Mat(bitmap.Height, bitmap.Width, MatType.CV_8UC4);
+
+                var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                var bmpData = bitmap.LockBits(
+                    rect,
+                    ImageLockMode.ReadOnly,
+                    PixelFormat.Format32bppArgb
+                );
+
+                try
+                {
+                    int width = bitmap.Width;
+                    int height = bitmap.Height;
+                    int rowBytes = width * 4;
+
+                    int srcStride = bmpData.Stride;          // 부호 중요
+                    int dstStride = (int)mat.Step();         // 보통 양수
+                    IntPtr scan0 = bmpData.Scan0;
+
+                    // Stride 부호에 따라 실제 첫 행 포인터 계산
+                    // - srcStride > 0 : scan0가 첫 행(상단)
+                    // - srcStride < 0 : scan0가 마지막 행(하단)
+                    IntPtr firstRowPtr = scan0;
+                    if (srcStride < 0)
+                    {
+                        firstRowPtr = scan0 + srcStride * (height - 1);
+                        srcStride = -srcStride; // 이후 계산은 양수 stride로
+                    }
+
+                    // 행 단위 복사 (상단 → 하단 순서 보장)
+                    var buffer = new byte[rowBytes];
+                    IntPtr dstBase = mat.Data;
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        IntPtr srcRow = firstRowPtr + (y * srcStride);
+                        IntPtr dstRow = dstBase + (y * dstStride);
+
+                        Marshal.Copy(srcRow, buffer, 0, rowBytes);
+                        Marshal.Copy(buffer, 0, dstRow, rowBytes);
+                    }
+                }
+                finally
+                {
+                    bitmap.UnlockBits(bmpData);
+                }
+
+                return mat;
             }
-            catch
+            catch (Exception ex)
             {
-                // 여기서 예외가 나면 managed 예외로 잡히지만,
-                // 현재 문제는 “즉사” 케이스라 우선 안전하게 빈 Mat 반환
+                // 운영 안정성: 빈 Mat 반환 유지 + 최소 로그
+                if ((DateTime.Now - _lastCaptureErrorAt).TotalMilliseconds >= CaptureErrorLogIntervalMs)
+                {
+                    _lastCaptureErrorAt = DateTime.Now;
+                    Logger.Error($"CaptureFrame failed: {ex}");
+                }
                 return new Mat();
             }
         }

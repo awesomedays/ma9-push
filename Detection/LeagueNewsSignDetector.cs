@@ -5,166 +5,192 @@ using OpenCvSharp;
 
 namespace Ma9_Season_Push.Detection
 {
-	/// <summary>
-	/// '¸®±× °á°ú - ÀüÃ¼ ±¸Àå ¼Ò½Ä' È­¸é °¨Áö±â
-	/// - ROI ÅÛÇÃ¸´ ¸ÅÄª ±â¹İ
-	/// - (¸®±× °á°ú) + (ÀüÃ¼ ±¸Àå ¼Ò½Ä) ÇÊ¼ö + (´ÙÀ½ ¹öÆ°) º¸Á¶(±âº»: ÇÊ¼ö)
-	/// </summary>
-	public sealed class LeagueNewsSignDetector : IDisposable
-	{
-		// Á¤±ÔÈ­ ROI (0~1) - 2048x1152 Ä¸Ã³ ±âÁØÀ¸·Î Æ©´×µÊ
-		// - ¸®±× °á°ú(title): x=0.42, y=0.17, w=0.26, h=0.12
-		// - ÀüÃ¼ ±¸Àå ¼Ò½Ä(subtitle): x=0.40, y=0.23, w=0.30, h=0.10
-		// - ´ÙÀ½ ¹öÆ°(next): x=0.44, y=0.70, w=0.18, h=0.12
-		private static readonly Rect2d RoiTitle = new(0.42, 0.17, 0.26, 0.12);
-		private static readonly Rect2d RoiSubtitle = new(0.40, 0.23, 0.30, 0.10);
-		private static readonly Rect2d RoiNext = new(0.44, 0.70, 0.18, 0.12);
+    /// <summary>
+    /// 'ë¦¬ê·¸ ê²°ê³¼ - ì „ì²´ êµ¬ì¥ ì†Œì‹' í™”ë©´ ê°ì§€ê¸°
+    /// - ROI í…œí”Œë¦¿ ë§¤ì¹­ ê¸°ë°˜
+    /// - (ë¦¬ê·¸ ê²°ê³¼) + (ì „ì²´ êµ¬ì¥ ì†Œì‹) í•„ìˆ˜ + (ë‹¤ìŒ ë²„íŠ¼) ë³´ì¡°(ê¸°ë³¸: í•„ìˆ˜)
+    /// </summary>
+    public sealed class LeagueNewsSignDetector : IDisposable
+    {
+        // ì •ê·œí™” ROI (0~1) - 2048x1152 ìº¡ì²˜ ê¸°ì¤€ìœ¼ë¡œ íŠœë‹ë¨
+        // - ë¦¬ê·¸ ê²°ê³¼(title): x=0.42, y=0.17, w=0.26, h=0.12
+        // - ì „ì²´ êµ¬ì¥ ì†Œì‹(subtitle): x=0.40, y=0.23, w=0.30, h=0.10
+        // - ë‹¤ìŒ ë²„íŠ¼(next): x=0.44, y=0.70, w=0.18, h=0.12
+        private static readonly Rect2d RoiTitle = new(0.42, 0.17, 0.26, 0.12);
+        private static readonly Rect2d RoiSubtitle = new(0.40, 0.23, 0.30, 0.10);
+        private static readonly Rect2d RoiNext = new(0.44, 0.70, 0.18, 0.12);
 
-		private readonly Mat _tplTitle;
-		private readonly Mat _tplSubtitle;
-		private readonly Mat _tplNext;
+        private readonly Mat _tplTitle;
+        private readonly Mat _tplSubtitle;
+        private readonly Mat _tplNext;
 
-		private readonly double _thTitle;
-		private readonly double _thSubtitle;
-		private readonly double _thNext;
+        private readonly double _thTitle;
+        private readonly double _thSubtitle;
+        private readonly double _thNext;
 
-		private readonly bool _requireNext;
-		private bool _disposed;
+        private readonly bool _requireNext;
+        private bool _disposed;
 
-		public LeagueNewsSignDetector(
-			string tplTitlePath,
-			string tplSubtitlePath,
-			string tplNextPath,
-			double thTitle = 0.93,
-			double thSubtitle = 0.93,
-			double thNext = 0.90,
-			bool requireNext = true)
-		{
-			_tplTitle = LoadTemplateGray(tplTitlePath);
-			_tplSubtitle = LoadTemplateGray(tplSubtitlePath);
+        public LeagueNewsSignDetector(
+            string tplTitlePath,
+            string tplSubtitlePath,
+            double thTitle = 0.93,
+            double thSubtitle = 0.93,
+            string? tplNextPath = null,
+            double thNext = 0.90,
+            bool requireNext = false)
+        {
+            _tplTitle = LoadTemplateGray(tplTitlePath);
+            _tplSubtitle = LoadTemplateGray(tplSubtitlePath);
 
-			_requireNext = requireNext;
-			_tplNext = requireNext ? LoadTemplateGray(tplNextPath) : new Mat(); // requireNext=false¸é ¹Ì»ç¿ë
+            _requireNext = requireNext;
 
-			if (_tplTitle.Empty() || _tplSubtitle.Empty() || (_requireNext && _tplNext.Empty()))
-				throw new InvalidOperationException("LeagueNewsSignDetector: ÅÛÇÃ¸´ ·Îµå ½ÇÆĞ(ÀÓº£µğµå ¸®¼Ò½º/°æ·Î È®ÀÎ ÇÊ¿ä)");
+            if (_requireNext)
+            {
+                if (string.IsNullOrWhiteSpace(tplNextPath))
+                    throw new ArgumentException("requireNext=true ì¸ ê²½ìš° tplNextPathê°€ í•„ìš”í•©ë‹ˆë‹¤.", nameof(tplNextPath));
 
-			_thTitle = thTitle;
-			_thSubtitle = thSubtitle;
-			_thNext = thNext;
-		}
+                _tplNext = LoadTemplateGray(tplNextPath);
+                if (_tplNext.Empty())
+                    throw new InvalidOperationException("LeagueNewsSignDetector: next í…œí”Œë¦¿ ë¡œë“œ ì‹¤íŒ¨(ê²½ë¡œ/ì„ë² ë””ë“œ ë¦¬ì†ŒìŠ¤ í™•ì¸ í•„ìš”)");
+            }
+            else
+            {
+                _tplNext = new Mat(); // ë¯¸ì‚¬ìš©
+            }
 
-		private static Mat LoadTemplateGray(string pathOrResource)
-		{
-			// 1) ÆÄÀÏÀÌ ½ÇÁ¦·Î Á¸ÀçÇÏ¸é ÆÄÀÏÀ» ¿ì¼± »ç¿ë (°³¹ß/µğ¹ö±ë ÆíÀÇ)
-			if (!string.IsNullOrWhiteSpace(pathOrResource) && File.Exists(pathOrResource))
-				return Cv2.ImRead(pathOrResource, ImreadModes.Grayscale);
+            if (_tplTitle.Empty() || _tplSubtitle.Empty())
+                throw new InvalidOperationException("LeagueNewsSignDetector: title/subtitle í…œí”Œë¦¿ ë¡œë“œ ì‹¤íŒ¨(ê²½ë¡œ/ì„ë² ë””ë“œ ë¦¬ì†ŒìŠ¤ í™•ì¸ í•„ìš”)");
 
-			// 2) ÀÓº£µğµå ¸®¼Ò½º¿¡¼­ ·Îµå (¿ÏÀü ´ÜÀÏ exe)
-			var key = string.IsNullOrWhiteSpace(pathOrResource)
-				? throw new ArgumentException("template path/resource is empty", nameof(pathOrResource))
-				: Path.GetFileName(pathOrResource.Replace('\\', '/'));
+            _thTitle = thTitle;
+            _thSubtitle = thSubtitle;
+            _thNext = thNext;
+        }
 
-			using var color = ResourceLoader.LoadPngAsMat(key);
-			if (color.Empty())
-				throw new InvalidOperationException($"LeagueNewsSignDetector: ÀÓº£µğµå ¸®¼Ò½º µğÄÚµå ½ÇÆĞ: {key}");
+        private static Mat LoadTemplateGray(string pathOrResource)
+        {
+            // 1) íŒŒì¼ì´ ì‹¤ì œë¡œ ì¡´ì¬í•˜ë©´ íŒŒì¼ì„ ìš°ì„  ì‚¬ìš© (ê°œë°œ/ë””ë²„ê¹… í¸ì˜)
+            if (!string.IsNullOrWhiteSpace(pathOrResource) && File.Exists(pathOrResource))
+                return Cv2.ImRead(pathOrResource, ImreadModes.Grayscale);
 
-			if (color.Channels() == 1)
-				return color.Clone();
+            // 2) ì„ë² ë””ë“œ ë¦¬ì†ŒìŠ¤ì—ì„œ ë¡œë“œ (ì™„ì „ ë‹¨ì¼ exe)
+            var key = string.IsNullOrWhiteSpace(pathOrResource)
+                ? throw new ArgumentException("template path/resource is empty", nameof(pathOrResource))
+                : Path.GetFileName(pathOrResource.Replace('\\', '/'));
 
-			var gray = new Mat();
-			Cv2.CvtColor(color, gray, ColorConversionCodes.BGR2GRAY);
-			return gray;
-		}
+            using var color = ResourceLoader.LoadPngAsMat(key);
+            if (color.Empty())
+                throw new InvalidOperationException($"LeagueNewsSignDetector: ì„ë² ë””ë“œ ë¦¬ì†ŒìŠ¤ ë””ì½”ë“œ ì‹¤íŒ¨: {key}");
 
-		public DetectionResult Detect(Mat frame)
-		{
-			if (_disposed)
-				return DetectionResult.Fail("detector disposed");
+            if (color.Channels() == 1)
+                return color.Clone();
 
-			if (frame is null || frame.Empty())
-				return DetectionResult.Fail("frame empty");
+            var gray = new Mat();
+            Cv2.CvtColor(color, gray, ColorConversionCodes.BGR2GRAY);
+            return gray;
+        }
 
-			using var gray = ToGray(frame);
+        public DetectionResult Detect(Mat frame)
+        {
+            if (_disposed)
+                return DetectionResult.Fail("detector disposed");
 
-			var titleScore = MatchInRoi(gray, RoiTitle, _tplTitle);
-			if (titleScore < _thTitle)
-				return DetectionResult.Fail($"title<{titleScore:0.000}>");
+            if (frame is null || frame.Empty())
+                return DetectionResult.Fail("frame empty");
 
-			var subtitleScore = MatchInRoi(gray, RoiSubtitle, _tplSubtitle);
-			if (subtitleScore < _thSubtitle)
-				return DetectionResult.Fail($"subtitle<{subtitleScore:0.000}>");
+            using var gray = ToGray(frame);
+            var frameSize = $"{gray.Width}x{gray.Height}";
 
-			if (_requireNext)
-			{
-				var nextScore = MatchInRoi(gray, RoiNext, _tplNext);
-				if (nextScore < _thNext)
-					return DetectionResult.Fail($"next<{nextScore:0.000}>");
+            var titleScore = MatchInRoi(gray, RoiTitle, _tplTitle, out var titleDiag);
+            if (titleScore < _thTitle)
+                return DetectionResult.Fail($"title<{titleScore:0.000}> {titleDiag} frame={frameSize}");
 
-				return DetectionResult.Ok($"hit title={titleScore:0.000}, subtitle={subtitleScore:0.000}, next={nextScore:0.000}");
-			}
+            var subtitleScore = MatchInRoi(gray, RoiSubtitle, _tplSubtitle, out var subDiag);
+            if (subtitleScore < _thSubtitle)
+                return DetectionResult.Fail($"subtitle<{subtitleScore:0.000}> {subDiag} frame={frameSize}");
 
-			return DetectionResult.Ok($"hit title={titleScore:0.000}, subtitle={subtitleScore:0.000}");
-		}
+            if (_requireNext)
+            {
+                var nextScore = MatchInRoi(gray, RoiNext, _tplNext, out var nextDiag);
+                if (nextScore < _thNext)
+                    return DetectionResult.Fail(
+                        $"next<{nextScore:0.000}> (title={titleScore:0.000}, subtitle={subtitleScore:0.000}) {nextDiag} frame={frameSize}"
+                    );
 
-		private static Mat ToGray(Mat src)
-		{
-			if (src.Channels() == 1)
-				return src.Clone();
+                return DetectionResult.Ok(
+                    $"hit title={titleScore:0.000}, subtitle={subtitleScore:0.000}, next={nextScore:0.000} frame={frameSize}"
+                );
+            }
 
-			var gray = new Mat();
+            return DetectionResult.Ok($"hit title={titleScore:0.000}, subtitle={subtitleScore:0.000} frame={frameSize}");
+        }
 
-			if (src.Channels() == 3)
-			{
-				Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
-				return gray;
-			}
+        private static Mat ToGray(Mat src)
+        {
+            if (src.Channels() == 1)
+                return src.Clone();
 
-			if (src.Channels() == 4)
-			{
-				Cv2.CvtColor(src, gray, ColorConversionCodes.BGRA2GRAY);
-				return gray;
-			}
+            var gray = new Mat();
 
-			throw new InvalidOperationException($"Unsupported channel count: {src.Channels()}");
-		}
+            if (src.Channels() == 3)
+            {
+                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+                return gray;
+            }
 
-		private static double MatchInRoi(Mat grayFrame, Rect2d roiNorm, Mat tplGray)
-		{
-			var roi = NormalizeToPixelRect(grayFrame, roiNorm);
-			using var cropped = new Mat(grayFrame, roi);
+            if (src.Channels() == 4)
+            {
+                Cv2.CvtColor(src, gray, ColorConversionCodes.BGRA2GRAY);
+                return gray;
+            }
 
-			using var result = new Mat();
-			Cv2.MatchTemplate(cropped, tplGray, result, TemplateMatchModes.CCoeffNormed);
-			Cv2.MinMaxLoc(result, out _, out var maxVal, out _, out _);
-			return maxVal;
-		}
+            throw new InvalidOperationException($"Unsupported channel count: {src.Channels()}");
+        }
 
-		private static Rect NormalizeToPixelRect(Mat frame, Rect2d roiNorm)
-		{
-			int x = (int)Math.Round(frame.Width * roiNorm.X);
-			int y = (int)Math.Round(frame.Height * roiNorm.Y);
-			int w = (int)Math.Round(frame.Width * roiNorm.Width);
-			int h = (int)Math.Round(frame.Height * roiNorm.Height);
+        // ===== [ë³€ê²½] diag(out) í¬í•¨ + ROI < Template ë°©ì–´ =====
+        private static double MatchInRoi(Mat grayFrame, Rect2d roiNorm, Mat tplGray, out string diag)
+        {
+            var roi = NormalizeToPixelRect(grayFrame, roiNorm);
 
-			x = Clamp(x, 0, frame.Width - 1);
-			y = Clamp(y, 0, frame.Height - 1);
-			w = Clamp(w, 1, frame.Width - x);
-			h = Clamp(h, 1, frame.Height - y);
+            diag = $"roi={roi.Width}x{roi.Height}, tpl={tplGray.Width}x{tplGray.Height}";
 
-			return new Rect(x, y, w, h);
-		}
+            using var cropped = new Mat(grayFrame, roi);
 
-		private static int Clamp(int v, int min, int max) => v < min ? min : (v > max ? max : v);
+            // ROIê°€ í…œí”Œë¦¿ë³´ë‹¤ ì‘ìœ¼ë©´ MatchTemplate ì˜ˆì™¸ ê°€ëŠ¥ì„±ì´ ìˆìœ¼ë‹ˆ 0ìœ¼ë¡œ ì²˜ë¦¬
+            if (cropped.Width < tplGray.Width || cropped.Height < tplGray.Height)
+                return 0.0;
 
-		public void Dispose()
-		{
-			if (_disposed) return;
-			_disposed = true;
+            using var result = new Mat();
+            Cv2.MatchTemplate(cropped, tplGray, result, TemplateMatchModes.CCoeffNormed);
+            Cv2.MinMaxLoc(result, out _, out var maxVal, out _, out _);
+            return maxVal;
+        }
 
-			_tplTitle.Dispose();
-			_tplSubtitle.Dispose();
-			_tplNext.Dispose();
-		}
-	}
+        private static Rect NormalizeToPixelRect(Mat frame, Rect2d roiNorm)
+        {
+            int x = (int)Math.Round(frame.Width * roiNorm.X);
+            int y = (int)Math.Round(frame.Height * roiNorm.Y);
+            int w = (int)Math.Round(frame.Width * roiNorm.Width);
+            int h = (int)Math.Round(frame.Height * roiNorm.Height);
+
+            x = Clamp(x, 0, frame.Width - 1);
+            y = Clamp(y, 0, frame.Height - 1);
+            w = Clamp(w, 1, frame.Width - x);
+            h = Clamp(h, 1, frame.Height - y);
+
+            return new Rect(x, y, w, h);
+        }
+
+        private static int Clamp(int v, int min, int max) => v < min ? min : (v > max ? max : v);
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            _tplTitle.Dispose();
+            _tplSubtitle.Dispose();
+            _tplNext.Dispose();
+        }
+    }
 }
