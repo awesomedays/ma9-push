@@ -1,36 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<UseWindowsForms>true</UseWindowsForms>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
 
-		<!-- 단일 EXE 강제 옵션 -->
-		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-		<SelfContained>true</SelfContained>
-		<PublishSingleFile>true</PublishSingleFile>
+    <!-- 단일 EXE 강제 옵션 -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
 
-		<!-- 네이티브(OpenCV) DLL 및 콘텐츠를 EXE에 포함하고, 실행 시 자동 추출 -->
-		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-		<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <!-- 네이티브(OpenCV) DLL 및 콘텐츠를 EXE에 포함하고, 실행 시 자동 추출 -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
 
-		<!-- 안정성 우선 (트리밍/디버그 심볼 비활성) -->
-		<PublishTrimmed>false</PublishTrimmed>
-		<DebugType>None</DebugType>
-		<DebugSymbols>false</DebugSymbols>
-	</PropertyGroup>
+    <!-- 안정성 우선 (트리밍/디버그 심볼 비활성) -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <DebugType>None</DebugType>
+    <DebugSymbols>false</DebugSymbols>
 
-	<ItemGroup>
-		<!-- OpenCVSharp (필수) -->
-		<PackageReference Include="OpenCvSharp4" Version="4.10.0.20240616" />
-		<PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20240616" />
-	</ItemGroup>
+    <!-- EXE 파일 아이콘 -->
+    <ApplicationIcon>Assets\Ma9_Season_Push_AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<!-- 템플릿 PNG 임베디드 포함 -->
-		<EmbeddedResource Include="Assets\**\*.png" />
-	</ItemGroup>
+  <ItemGroup>
+    <!-- OpenCVSharp (필수) -->
+    <PackageReference Include="OpenCvSharp4" Version="4.10.0.20240616" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20240616" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 템플릿 PNG: exe 내부 임베디드 -->
+    <EmbeddedResource Include="Assets\**\*.png" />
+
+    <!-- 아이콘 ICO: exe 내부 임베디드 (트레이 아이콘도 스트림 로드로 사용) -->
+    <EmbeddedResource Include="Assets\**\*.ico" />
+  </ItemGroup>
 
 </Project>

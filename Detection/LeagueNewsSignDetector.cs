@@ -8,7 +8,7 @@ namespace Ma9_Season_Push.Detection
     /// <summary>
     /// '리그 결과 - 전체 구장 소식' 화면 감지기
     /// - ROI 템플릿 매칭 기반
-    /// - (리그 결과) + (전체 구장 소식) 필수 + (다음 버튼) 보조(기본: 필수)
+    /// - (리그 결과) + (전체 구장 소식) 필수 + (다음 버튼) 미사용
     /// </summary>
     public sealed class LeagueNewsSignDetector : IDisposable
     {

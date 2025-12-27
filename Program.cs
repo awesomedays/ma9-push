@@ -1,29 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 using Ma9_Season_Push.Core;
 using Ma9_Season_Push.Capture;
 using Ma9_Season_Push.Detection;
-using Ma9_Season_Push.Notification;
 using Ma9_Season_Push.Logging;
+using Ma9_Season_Push.Notification;
 
 namespace Ma9_Season_Push;
 
-class Program
+internal static class Program
 {
+    // 작업관리자 프로세스명: "Ma9Ma9Remaster.exe"
+    // GetProcessesByName에는 확장자 제외한 이름만 넣어야 함.
     private const string Ma9ProcessName = "Ma9Ma9Remaster";
 
-    // ===== DPI Awareness 설정 =====
-    private static readonly IntPtr DPI_AWARENESS_CONTEXT_SYSTEM_AWARE = new(-2);
-    private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = new(-3);
+    // ===== DPI aware (Per-monitor v2 우선) =====
     private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new(-4);
+    private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = new(-3);
+    private static readonly IntPtr DPI_AWARENESS_CONTEXT_SYSTEM_AWARE = new(-2);
 
     [DllImport("user32.dll")]
     private static extern bool SetProcessDpiAwarenessContext(IntPtr dpiFlag);
 
+    // Windows 8.1 fallback
     private enum PROCESS_DPI_AWARENESS
     {
         Process_DPI_Unaware = 0,
@@ -38,14 +46,17 @@ class Program
     [DllImport("user32.dll")]
     private static extern bool SetProcessDPIAware();
 
-    // ===== FATAL 로그(파일 + 콘솔) =====
-    private static readonly object _fatalLock = new();
+    // ===== 윈도우 RECT 조회(스크린 인덱스 판별용) =====
+    [DllImport("user32.dll")]
+    private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
-    private static string GetFatalLogPath()
+    [StructLayout(LayoutKind.Sequential)]
+    private struct RECT
     {
-        var baseDir = AppContext.BaseDirectory;
-        return Path.Combine(baseDir, "fatal.log");
+        public int Left, Top, Right, Bottom;
     }
+
+    private static readonly object _fatalLock = new();
 
     private static void AppendFatal(string title, Exception? ex = null)
     {
@@ -53,7 +64,8 @@ class Program
         {
             lock (_fatalLock)
             {
-                var path = GetFatalLogPath();
+                // AppPaths.FatalLogPath는 AppPath.cs에서 제공(요청 범위에 포함)
+                var path = AppPaths.FatalLogPath;
                 var ts = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
                 var msg =
@@ -61,10 +73,8 @@ class Program
                     (ex == null ? "" : ex + Environment.NewLine) +
                     new string('-', 120) + Environment.NewLine;
 
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                 File.AppendAllText(path, msg);
-
-                Console.Error.WriteLine($"[FATAL] {title}");
-                if (ex != null) Console.Error.WriteLine(ex.ToString());
             }
         }
         catch
@@ -73,17 +83,14 @@ class Program
         }
     }
 
-    // ===== Unhandled 예외 핸들러 등록 =====
     private static void RegisterGlobalExceptionHandlers()
     {
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
             try
             {
-                if (e.ExceptionObject is Exception ex)
-                    AppendFatal("AppDomain.UnhandledException", ex);
-                else
-                    AppendFatal("AppDomain.UnhandledException (non-Exception object)");
+                if (e.ExceptionObject is Exception ex) AppendFatal("AppDomain.UnhandledException", ex);
+                else AppendFatal("AppDomain.UnhandledException (non-Exception object)");
             }
             catch { }
         };
@@ -101,7 +108,6 @@ class Program
 
     private static void TryEnableDpiAwareness()
     {
-        // Windows 10+ (Per-monitor v2)
         try
         {
             if (SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
@@ -124,10 +130,9 @@ class Program
         }
         catch
         {
-            // ignore and fallback
+            // ignore and fallback below
         }
 
-        // Windows 8.1+
         try
         {
             var hr = SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
@@ -146,10 +151,9 @@ class Program
         }
         catch
         {
-            // ignore and fallback
+            // ignore and fallback below
         }
 
-        // Vista+
         try
         {
             if (SetProcessDPIAware())
@@ -166,36 +170,70 @@ class Program
         Logger.Info("[DPI] DPI awareness enable failed (continuing).");
     }
 
-    static async Task Main()
+    private static int? TryGetMa9ClientScreenIndex()
     {
-        // 글로벌 예외 로깅 등록(가장 먼저)
-        RegisterGlobalExceptionHandlers();
-
         try
         {
-            // DPI aware 설정은 반드시 Main 최상단에서
-            TryEnableDpiAwareness();
+            var p = Process.GetProcessesByName(Ma9ProcessName)
+                .FirstOrDefault(x => x.MainWindowHandle != IntPtr.Zero);
 
+            if (p == null) return null;
+            if (!GetWindowRect(p.MainWindowHandle, out var r)) return null;
+
+            var rect = new Rectangle(r.Left, r.Top, r.Right - r.Left, r.Bottom - r.Top);
+            var screen = Screen.FromRectangle(rect);
+
+            var idx = Array.IndexOf(Screen.AllScreens, screen);
+            return (idx >= 0) ? idx : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    [STAThread]
+    private static void Main()
+    {
+        RegisterGlobalExceptionHandlers();
+        TryEnableDpiAwareness();
+
+        ApplicationConfiguration.Initialize();
+
+        // TrayAppContext는 이번 작업에서 추가할 파일(TrayAppContext.cs)
+        // - workerTask는 Program.RunWatcherAsync를 사용
+        // - 종료 시퀀스에서 CTS.Cancel + "마구알림 OFF" 1회 전송 + worker join 수행
+        Application.Run(new TrayAppContext(RunWatcherAsync));
+    }
+
+    /// <summary>
+    /// 기존 Program.Main의 감시 루프를 이식한 워커.
+    /// - 트레이 종료에서 CancellationToken으로 정상 종료됨
+    /// - OFF 전송은 TrayAppContext에서 1회 처리(워커는 ON/상태 알림만 담당)
+    /// </summary>
+    internal static async Task RunWatcherAsync(CancellationToken token)
+    {
+        try
+        {
             var state = new StateMachine();
 
-            // 서브 1 모니터 고정 감시
+            // 기본은 서브1 고정(기존 정책)
+            // (추후: 클라이언트 ON 감지 시 TryGetMa9ClientScreenIndex로 capture 재생성하는 개선 가능)
             var capture = new CaptureService(screenIndex: 1);
 
-            var baseDir = AppContext.BaseDirectory;
+            var baseDir = AppPaths.ExeDir; // AppPath.cs에서 제공(실행파일 기준 디렉터리)
 
-            using var endDetector = new EndSignDetector
-            (
+            using var endDetector = new EndSignDetector(
                 tplConfirmPath: Path.Combine(baseDir, "Assets", "tpl_end_confirm_gray.png"),
                 tplRewardPath: Path.Combine(baseDir, "Assets", "tpl_end_reward_gray.png"),
                 thConfirm: 0.93,
-                thReward: 0.93
+                thReward: 0.88
             );
 
-            // NOTE: 아래 호출은 'LeagueNewsSignDetector 생성자 시그니처 정리(B안)'이 반영되어 있어야 컴파일됩니다.
-            using var leagueNewsDetector = new LeagueNewsSignDetector
-            (
+            using var leagueNewsDetector = new LeagueNewsSignDetector(
                 tplTitlePath: Path.Combine(baseDir, "Assets", "tpl_lobby_title_gray_new.png"),
                 tplSubtitlePath: Path.Combine(baseDir, "Assets", "tpl_lobby_subtitle_gray_new.png"),
+                tplNextPath: Path.Combine(baseDir, "Assets", "tpl_lobby_next_gray.png"),
                 thTitle: 0.93,
                 thSubtitle: 0.93,
                 thNext: 0.90,
@@ -207,37 +245,49 @@ class Program
 
             var notifier = new TelegramNotifier();
 
-            // 단계 알림 중복 방지 플래그
             var sentAppOn = false;
             var sentClientOn = false;
             var sentEndDetected = false;
             var sentLeagueDetected = false;
 
-            // 프로세스 체크 쓰로틀
             var lastProcCheckAt = DateTime.MinValue;
             var procCheckIntervalMs = 2000;
 
-            // 루프 내부 예외 스팸 방지 쓰로틀
             var lastLoopExceptionAt = DateTime.MinValue;
             var loopExceptionIntervalMs = 2000;
 
+            // 디버그 로그 쓰로틀(콘솔 대신 로그로만)
+            var lastEndDebugLogAt = DateTime.MinValue;
+            var endDebugLogIntervalMs = 2000;
+
+            var lastLeagueDebugLogAt = DateTime.MinValue;
+            var leagueDebugLogIntervalMs = 1000;
+
             DateTime? waitLeagueNewsEnteredAt = null;
 
+            var beforeStart = state.State; // 보통 Idle
             state.Start();
             Logger.Info("Ma9_Season_Push started.");
+            Logger.Info($"[State] {beforeStart} -> {state.State} | trigger=AppStart");
 
-            // (1) 앱 시작 알림
             if (!sentAppOn)
             {
                 sentAppOn = true;
                 await notifier.SendAsync("마구알림 ON");
             }
 
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                await Task.Delay(AppConfig.ObserveIntervalMs);
+                try
+                {
+                    await Task.Delay(AppConfig.ObserveIntervalMs, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
 
-                // (2) 마구마구 클라이언트 시작 감지 알림
+                // 클라이언트 프로세스 감지(1회)
                 if (!sentClientOn &&
                     (DateTime.Now - lastProcCheckAt).TotalMilliseconds >= procCheckIntervalMs)
                 {
@@ -248,6 +298,11 @@ class Program
                         var procs = Process.GetProcessesByName(Ma9ProcessName);
                         if (procs is { Length: > 0 })
                         {
+                            var idx = TryGetMa9ClientScreenIndex();
+                            Logger.Info(idx.HasValue
+                                ? $"[Ma9 Screen] {Ma9ProcessName}.exe ScreenIndex={idx.Value}"
+                                : $"[Ma9 Screen] {Ma9ProcessName}.exe ScreenIndex=(unknown)");
+
                             sentClientOn = true;
                             await notifier.SendAsync("마구마구 클라이언트 ON");
                             Logger.Info($"Client process detected: {Ma9ProcessName}.exe");
@@ -272,35 +327,53 @@ class Program
                     {
                         var endRes = endDetector.Detect(frame);
 
+                        if ((DateTime.Now - lastEndDebugLogAt).TotalMilliseconds >= endDebugLogIntervalMs)
+                        {
+                            lastEndDebugLogAt = DateTime.Now;
+                            Logger.Info($"[EndDebug] Hit={endRes.Hit}, Reason={endRes.Reason}");
+                        }
+
                         if (endDebounce.Check(endRes.Hit))
                         {
                             Logger.Info($"END detected: {endRes.Reason}");
 
-                            // (3) 경기 종료 알림
                             if (!sentEndDetected)
                             {
                                 sentEndDetected = true;
                                 await notifier.SendAsync("경기종료");
                             }
 
+                            var from = state.State;
                             state.ToWaitLeagueNews();
                             waitLeagueNewsEnteredAt = DateTime.Now;
+
+                            Logger.Info($"[State] {from} -> {state.State} | trigger=EndDetected->WaitLeagueNews | detail={endRes.Reason}");
 
                             leagueNewsDebounce.Reset();
                         }
                     }
                     else if (state.State == AppState.WaitLeagueNews)
                     {
-                        // 타임아웃 체크
                         if (waitLeagueNewsEnteredAt.HasValue &&
                             (DateTime.Now - waitLeagueNewsEnteredAt.Value).TotalMilliseconds >= AppConfig.WaitLeagueNewsTimeoutMs)
                         {
+                            Logger.Error($"WAIT_LEAGUE_NEWS timeout ({AppConfig.WaitLeagueNewsTimeoutMs}ms). Fallback to WATCHING_END.");
+
+                            try
+                            {
+                                await notifier.SendAsync("대기모드 전환 : 타임아웃");
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Error($"Failed to send timeout telegram (ignored): {ex}");
+                            }
+
+                            var from = state.State;
                             state.ToWatchingEnd();
                             waitLeagueNewsEnteredAt = null;
 
-                            Logger.Info("WaitLeagueNews timeout -> WatchingEnd");
+                            Logger.Info($"[State] {from} -> {state.State} | trigger=WaitLeagueNewsTimeout");
 
-                            // 다음 경기 사이클을 위해 경기 단위 플래그 리셋
                             sentEndDetected = false;
                             sentLeagueDetected = false;
 
@@ -311,10 +384,16 @@ class Program
 
                         var leagueRes = leagueNewsDetector.Detect(frame);
 
-                        // WaitLeagueNews에서는 1-hit 즉시 확정이 핵심
-                        if (leagueNewsDebounce.Check(leagueRes.Hit))
+                        if ((DateTime.Now - lastLeagueDebugLogAt).TotalMilliseconds >= leagueDebugLogIntervalMs)
                         {
-                            Logger.Info($"LEAGUE detected: {leagueRes.Reason}");
+                            lastLeagueDebugLogAt = DateTime.Now;
+                            Logger.Info($"[LeagueDebug] Hit={leagueRes.Hit}, Reason={leagueRes.Reason}");
+                        }
+
+                        // WaitLeagueNews에서는 1-hit 즉시 확정
+                        if (leagueRes.Hit)
+                        {
+                            Logger.Info($"LEAGUE_NEWS detected (instant): {leagueRes.Reason}");
 
                             if (!sentLeagueDetected)
                             {
@@ -322,12 +401,12 @@ class Program
                                 await notifier.SendAsync("대기모드 전환");
                             }
 
+                            var from = state.State;
                             state.ToWatchingEnd();
                             waitLeagueNewsEnteredAt = null;
 
-                            Logger.Info("LeagueDetected -> WatchingEnd");
+                            Logger.Info($"[State] {from} -> {state.State} | trigger=LeagueDetected->WatchingEnd | detail={leagueRes.Reason}");
 
-                            // 다음 경기 대비
                             sentEndDetected = false;
                             sentLeagueDetected = false;
 
@@ -338,18 +417,19 @@ class Program
                 }
                 catch (Exception ex)
                 {
-                    // 루프 내부에서 죽는 예외를 잡고 계속 실행 (운영 안정성)
                     if ((DateTime.Now - lastLoopExceptionAt).TotalMilliseconds >= loopExceptionIntervalMs)
                     {
                         lastLoopExceptionAt = DateTime.Now;
-                        Logger.Error($"Loop exception: {ex}");
+                        AppendFatal("Loop exception (capture/detect)", ex);
                     }
                 }
             }
+
+            Logger.Info("Watcher loop cancelled. Exiting worker.");
         }
         catch (Exception ex)
         {
-            AppendFatal("Main() fatal exception", ex);
+            AppendFatal("RunWatcherAsync fatal exception", ex);
         }
     }
 }

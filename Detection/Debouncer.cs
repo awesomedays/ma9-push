@@ -1,4 +1,6 @@
-﻿namespace Ma9_Season_Push.Detection;
+﻿using Ma9_Season_Push;
+
+namespace Ma9_Season_Push.Detection;
 
 public class Debouncer
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Ma9_Season_Push;
 using Ma9_Season_Push.Logging;
 
 namespace Ma9_Season_Push.Notification;
