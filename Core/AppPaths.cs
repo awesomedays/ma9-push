@@ -18,11 +18,6 @@ public static class AppPaths
     );
 
     /// <summary>
-    /// 현재 실행 중인 exe 파일 전체 경로
-    /// </summary>
-    public static string ExePath => _exePath.Value;
-
-    /// <summary>
     /// exe 파일이 위치한 디렉터리
     /// </summary>
     public static string ExeDir => _exeDir.Value;

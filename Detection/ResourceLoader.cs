@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using OpenCvSharp;
 
@@ -73,11 +72,5 @@ internal static class ResourceLoader
             throw new InvalidOperationException($"ImDecode returned empty Mat: {fullResourceName}");
 
         return mat;
-    }
-
-    // [테스트용] 임베디드 리소스 전체명 목록
-    public static string[] ListAllResourceNames()
-    {
-        return _asm.GetManifestResourceNames();
     }
 }

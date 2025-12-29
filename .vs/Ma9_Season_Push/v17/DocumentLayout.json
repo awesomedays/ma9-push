@@ -1,58 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Projects\\Ma9_Season_Push\\",
+  "WorkspaceRootPath": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\core\\traymenustyle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:core\\traymenustyle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\core\\trayappcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:core\\trayappcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\notification\\telegramnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:notification\\telegramnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\detection\\debouncer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:detection\\debouncer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\logging\\logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:logging\\logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\appconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:appconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\core\\apppaths.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:core\\apppaths.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\detection\\leaguenewssigndetector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:detection\\leaguenewssigndetector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\detection\\resourceloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\detection\\resourceloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:detection\\resourceloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\capture\\captureservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:capture\\captureservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\detection\\endsigndetector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:detection\\endsigndetector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\core\\apppaths.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:core\\apppaths.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\ma9_season_push\\core\\statemachine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:core\\statemachine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\appconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:appconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|d:\\projects\\01.personal\\ma9_season_push\\logging\\logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66422203-E057-4440-9183-4F0A53907D1C}|Ma9_Season_Push.csproj|solutionrelative:logging\\logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -66,13 +34,13 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Program.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Program.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAGcBAAAAAAAAAAAewI4BAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAEwBAAAAAAAAAAAWwFsBAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-23T08:08:31.62Z",
               "IsPinned": true,
@@ -81,156 +49,54 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "TrayMenuStyle.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Core\\TrayMenuStyle.cs",
-              "RelativeDocumentMoniker": "Core\\TrayMenuStyle.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Core\\TrayMenuStyle.cs",
-              "RelativeToolTip": "Core\\TrayMenuStyle.cs",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAewJAAAAAqAAAAAAAAAA==",
+              "Title": "ResourceLoader.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Detection\\ResourceLoader.cs",
+              "RelativeDocumentMoniker": "Detection\\ResourceLoader.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Detection\\ResourceLoader.cs",
+              "RelativeToolTip": "Detection\\ResourceLoader.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T08:57:07.282Z",
+              "WhenOpened": "2025-12-29T06:47:57.467Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AppPaths.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Core\\AppPaths.cs",
+              "RelativeDocumentMoniker": "Core\\AppPaths.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Core\\AppPaths.cs",
+              "RelativeToolTip": "Core\\AppPaths.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAUwBgAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-29T06:18:07.388Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Debouncer.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Detection\\Debouncer.cs",
-              "RelativeDocumentMoniker": "Detection\\Debouncer.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Detection\\Debouncer.cs",
-              "RelativeToolTip": "Detection\\Debouncer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T06:54:00.177Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AppPaths.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Core\\AppPaths.cs",
-              "RelativeDocumentMoniker": "Core\\AppPaths.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Core\\AppPaths.cs",
-              "RelativeToolTip": "Core\\AppPaths.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAADwv1MAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T06:34:27.84Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "TrayAppContext.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Core\\TrayAppContext.cs",
-              "RelativeDocumentMoniker": "Core\\TrayAppContext.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Core\\TrayAppContext.cs",
-              "RelativeToolTip": "Core\\TrayAppContext.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAACkAAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T06:33:13.163Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
               "Title": "Logger.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Logging\\Logger.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Logging\\Logger.cs",
               "RelativeDocumentMoniker": "Logging\\Logger.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Logging\\Logger.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\Logging\\Logger.cs",
               "RelativeToolTip": "Logging\\Logger.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAA3wB8AAAA3AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-26T18:05:27.946Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ResourceLoader.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Detection\\ResourceLoader.cs",
-              "RelativeDocumentMoniker": "Detection\\ResourceLoader.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Detection\\ResourceLoader.cs",
-              "RelativeToolTip": "Detection\\ResourceLoader.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAIwFMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-26T17:54:12.737Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "LeagueNewsSignDetector.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Detection\\LeagueNewsSignDetector.cs",
-              "RelativeDocumentMoniker": "Detection\\LeagueNewsSignDetector.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Detection\\LeagueNewsSignDetector.cs",
-              "RelativeToolTip": "Detection\\LeagueNewsSignDetector.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-26T14:03:17.77Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AppConfig.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\AppConfig.cs",
-              "RelativeDocumentMoniker": "AppConfig.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\AppConfig.cs",
-              "RelativeToolTip": "AppConfig.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAIwAIAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-26T12:36:44.189Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "EndSignDetector.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Detection\\EndSignDetector.cs",
-              "RelativeDocumentMoniker": "Detection\\EndSignDetector.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Detection\\EndSignDetector.cs",
-              "RelativeToolTip": "Detection\\EndSignDetector.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFAAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-26T05:36:10.569Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "CaptureService.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Capture\\CaptureService.cs",
-              "RelativeDocumentMoniker": "Capture\\CaptureService.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Capture\\CaptureService.cs",
-              "RelativeToolTip": "Capture\\CaptureService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-26T03:23:21.798Z",
+              "WhenOpened": "2025-12-29T06:06:50.816Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "TelegramNotifier.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Notification\\TelegramNotifier.cs",
-              "RelativeDocumentMoniker": "Notification\\TelegramNotifier.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Notification\\TelegramNotifier.cs",
-              "RelativeToolTip": "Notification\\TelegramNotifier.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAWAAAAAAAAAA==",
+              "Title": "AppConfig.cs",
+              "DocumentMoniker": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\AppConfig.cs",
+              "RelativeDocumentMoniker": "AppConfig.cs",
+              "ToolTip": "D:\\Projects\\01.Personal\\Ma9_Season_Push\\AppConfig.cs",
+              "RelativeToolTip": "AppConfig.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T09:02:31.808Z",
+              "WhenOpened": "2025-12-29T02:36:53.312Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "StateMachine.cs",
-              "DocumentMoniker": "D:\\Projects\\Ma9_Season_Push\\Core\\StateMachine.cs",
-              "RelativeDocumentMoniker": "Core\\StateMachine.cs",
-              "ToolTip": "D:\\Projects\\Ma9_Season_Push\\Core\\StateMachine.cs",
-              "RelativeToolTip": "Core\\StateMachine.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T08:49:55.581Z"
             }
           ]
         }

@@ -8,7 +8,6 @@ namespace Ma9_Season_Push.Logging;
 
 /// <summary>
 /// 파일 기반 로거 (WinExe 대응)
-/// - Console.WriteLine 제거
 /// - exe 기준 logs 디렉터리에 일자별 로그 기록
 /// - 로깅 실패 시 앱 동작에 영향 주지 않음
 /// </summary>

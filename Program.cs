@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -64,7 +63,6 @@ internal static class Program
         {
             lock (_fatalLock)
             {
-                // AppPaths.FatalLogPath는 AppPath.cs에서 제공(요청 범위에 포함)
                 var path = AppPaths.FatalLogPath;
                 var ts = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
@@ -200,16 +198,12 @@ internal static class Program
 
         ApplicationConfiguration.Initialize();
 
-        // TrayAppContext는 이번 작업에서 추가할 파일(TrayAppContext.cs)
-        // - workerTask는 Program.RunWatcherAsync를 사용
-        // - 종료 시퀀스에서 CTS.Cancel + "마구알림 OFF" 1회 전송 + worker join 수행
+        // 트레이 앱 컨텍스트 실행
         Application.Run(new TrayAppContext(RunWatcherAsync));
     }
 
     /// <summary>
-    /// 기존 Program.Main의 감시 루프를 이식한 워커.
-    /// - 트레이 종료에서 CancellationToken으로 정상 종료됨
-    /// - OFF 전송은 TrayAppContext에서 1회 처리(워커는 ON/상태 알림만 담당)
+    /// 트레이에서 구동되는 워커(감시 루프)
     /// </summary>
     internal static async Task RunWatcherAsync(CancellationToken token)
     {
@@ -217,11 +211,10 @@ internal static class Program
         {
             var state = new StateMachine();
 
-            // 기본은 서브1 고정(기존 정책)
-            // (추후: 클라이언트 ON 감지 시 TryGetMa9ClientScreenIndex로 capture 재생성하는 개선 가능)
+            // 사양 확정: 서브1(ScreenIndex=1) 고정 감시
             var capture = new CaptureService(screenIndex: 1);
 
-            var baseDir = AppPaths.ExeDir; // AppPath.cs에서 제공(실행파일 기준 디렉터리)
+            var baseDir = AppPaths.ExeDir;
 
             using var endDetector = new EndSignDetector(
                 tplConfirmPath: Path.Combine(baseDir, "Assets", "tpl_end_confirm_gray.png"),
@@ -241,8 +234,6 @@ internal static class Program
             );
 
             var endDebounce = new Debouncer();
-            var leagueNewsDebounce = new Debouncer();
-
             var notifier = new TelegramNotifier();
 
             var sentAppOn = false;
@@ -256,16 +247,9 @@ internal static class Program
             var lastLoopExceptionAt = DateTime.MinValue;
             var loopExceptionIntervalMs = 2000;
 
-            // 디버그 로그 쓰로틀(콘솔 대신 로그로만)
-            var lastEndDebugLogAt = DateTime.MinValue;
-            var endDebugLogIntervalMs = 2000;
-
-            var lastLeagueDebugLogAt = DateTime.MinValue;
-            var leagueDebugLogIntervalMs = 1000;
-
             DateTime? waitLeagueNewsEnteredAt = null;
 
-            var beforeStart = state.State; // 보통 Idle
+            var beforeStart = state.State;
             state.Start();
             Logger.Info("Ma9_Season_Push started.");
             Logger.Info($"[State] {beforeStart} -> {state.State} | trigger=AppStart");
@@ -327,12 +311,6 @@ internal static class Program
                     {
                         var endRes = endDetector.Detect(frame);
 
-                        if ((DateTime.Now - lastEndDebugLogAt).TotalMilliseconds >= endDebugLogIntervalMs)
-                        {
-                            lastEndDebugLogAt = DateTime.Now;
-                            Logger.Info($"[EndDebug] Hit={endRes.Hit}, Reason={endRes.Reason}");
-                        }
-
                         if (endDebounce.Check(endRes.Hit))
                         {
                             Logger.Info($"END detected: {endRes.Reason}");
@@ -348,8 +326,6 @@ internal static class Program
                             waitLeagueNewsEnteredAt = DateTime.Now;
 
                             Logger.Info($"[State] {from} -> {state.State} | trigger=EndDetected->WaitLeagueNews | detail={endRes.Reason}");
-
-                            leagueNewsDebounce.Reset();
                         }
                     }
                     else if (state.State == AppState.WaitLeagueNews)
@@ -378,17 +354,10 @@ internal static class Program
                             sentLeagueDetected = false;
 
                             endDebounce.Reset();
-                            leagueNewsDebounce.Reset();
                             continue;
                         }
 
                         var leagueRes = leagueNewsDetector.Detect(frame);
-
-                        if ((DateTime.Now - lastLeagueDebugLogAt).TotalMilliseconds >= leagueDebugLogIntervalMs)
-                        {
-                            lastLeagueDebugLogAt = DateTime.Now;
-                            Logger.Info($"[LeagueDebug] Hit={leagueRes.Hit}, Reason={leagueRes.Reason}");
-                        }
 
                         // WaitLeagueNews에서는 1-hit 즉시 확정
                         if (leagueRes.Hit)
@@ -411,7 +380,6 @@ internal static class Program
                             sentLeagueDetected = false;
 
                             endDebounce.Reset();
-                            leagueNewsDebounce.Reset();
                         }
                     }
                 }
