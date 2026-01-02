@@ -211,8 +211,10 @@ internal static class Program
         {
             var state = new StateMachine();
 
-            // 사양 확정: 서브1(ScreenIndex=1) 고정 감시
-            var capture = new CaptureService(screenIndex: 1);
+            // 마구마구 클라이언트가 실행 중인 모니터 자동 검출
+            var clientScreenIdx = TryGetMa9ClientScreenIndex() ?? 0;
+            Logger.Info($"[Capture] Target screen index: {clientScreenIdx}");
+            var capture = new CaptureService(screenIndex: clientScreenIdx);
 
             var baseDir = AppPaths.ExeDir;
 
