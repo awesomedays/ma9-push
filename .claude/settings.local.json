@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /d/Projects/AWESOMEDAYS/Ma9Push log --oneline -10)",
+      "Bash(git -C \"d:/Projects/AWESOMEDAYS/Ma9Push\" log --oneline --all)"
+    ]
+  }
+}
