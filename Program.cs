@@ -228,7 +228,7 @@ internal static class Program
             using var leagueNewsDetector = new LeagueNewsSignDetector(
                 tplTitlePath: Path.Combine(baseDir, "Assets", "tpl_lobby_title_gray_new.png"),
                 tplSubtitlePath: Path.Combine(baseDir, "Assets", "tpl_lobby_subtitle_gray_new.png"),
-                tplNextPath: Path.Combine(baseDir, "Assets", "tpl_lobby_next_gray.png"),
+                tplNextPath: null,
                 thTitle: 0.93,
                 thSubtitle: 0.93,
                 thNext: 0.90,

@@ -1,8 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Ma9_Season_Push;
+using Ma9_Season_Push.Core;
 using Ma9_Season_Push.Logging;
 
 namespace Ma9_Season_Push.Notification;
@@ -14,20 +17,44 @@ public sealed class TelegramNotifier
         Timeout = TimeSpan.FromSeconds(10)
     };
 
-    // ===============================
-    // ▼▼ 여기만 수정하면 됩니다 ▼▼
-    // ===============================
+    private readonly string _botToken;
+    private readonly string _chatId;
 
-    private const string BOT_TOKEN = "***REMOVED***";
-    private const string CHAT_ID = "***REMOVED***";
-    // 예)
-    // private const string BOT_TOKEN = "123456789:AAxxxxxxxxxxxxxxxxxxxxx";
-    // private const string CHAT_ID   = "-1001234567890";
-    // ===============================
+    public TelegramNotifier()
+    {
+        (_botToken, _chatId) = LoadConfig();
+    }
+
+    private static (string botToken, string chatId) LoadConfig()
+    {
+        try
+        {
+            var configPath = Path.Combine(AppPaths.ExeDir, "telegram.json");
+            if (!File.Exists(configPath))
+            {
+                Logger.Error($"[Telegram] Config file not found: {configPath}");
+                return ("", "");
+            }
+
+            var json = File.ReadAllText(configPath);
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            var botToken = root.TryGetProperty("BotToken", out var bt) ? bt.GetString() ?? "" : "";
+            var chatId = root.TryGetProperty("ChatId", out var ci) ? ci.GetString() ?? "" : "";
+
+            return (botToken, chatId);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"[Telegram] Failed to load config: {ex.Message}");
+            return ("", "");
+        }
+    }
 
     public async Task SendAsync(string message)
     {
-        if (string.IsNullOrWhiteSpace(BOT_TOKEN) || string.IsNullOrWhiteSpace(CHAT_ID))
+        if (string.IsNullOrWhiteSpace(_botToken) || string.IsNullOrWhiteSpace(_chatId))
         {
             Logger.Error($"[Telegram] BotToken or ChatId is empty. message={message}");
             return;
@@ -40,10 +67,10 @@ public sealed class TelegramNotifier
         {
             try
             {
-                var url = $"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage";
+                var url = $"https://api.telegram.org/bot{_botToken}/sendMessage";
                 using var content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
-                    ["chat_id"] = CHAT_ID,
+                    ["chat_id"] = _chatId,
                     ["text"] = message
                 });
 
