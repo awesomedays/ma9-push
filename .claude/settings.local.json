@@ -3,7 +3,9 @@
     "allow": [
       "Bash(git -C /d/Projects/AWESOMEDAYS/Ma9Push log --oneline -10)",
       "Bash(git -C \"d:/Projects/AWESOMEDAYS/Ma9Push\" log --oneline --all)",
-      "Bash(dotnet publish:*)"
+      "Bash(dotnet publish:*)",
+      "Bash(dotnet restore:*)",
+      "WebFetch(domain:api.telegram.org)"
     ]
   }
 }
